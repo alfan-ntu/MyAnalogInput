@@ -30,11 +30,12 @@
  * Al modified Arduino example project "AnalogInput" to read value from a photodiode analog output
  * Date : 2017/8/10
  */
-int sensorPin = A0;    // select the input pin for the potentiometer
-int ledPin = 13;      // select the pin for the LED
-int sensorValue = 0;  // variable to store the value coming from the sensor
-int limit=500;        // sensor threshold value
-int pollingInterval=100;     // polling interval of the sensor reading
+#define BREATHING_LED
+int sensorPin = A0;             // select the input pin for the potentiometer
+int ledPin = LED_BUILTIN;       // select the pin for the LED
+int sensorValue = 0;            // variable to store the value coming from the sensor
+int limit=500;                  // sensor threshold value
+int pollingInterval=200;        // polling interval of the sensor reading
 
 void setup() {
 // declare the ledPin as an OUTPUT:
@@ -47,13 +48,18 @@ void loop() {
   // read the value from the sensor:
   sensorValue = analogRead(sensorPin);
   Serial.println(sensorValue);
+  
+#ifdef BREATHING_LED 
   // toggle LED as an operation indicator
   digitalWrite(ledPin, !digitalRead(ledPin));
+#else 
+  // using LED as an indicator of the photodiode reading larger or less than the threshold
   if(sensorValue <= limit){
     digitalWrite(ledPin, HIGH);
   } else if (sensorValue > limit){
     digitalWrite(ledPin, LOW);
   }
-  
+#endif  
+
   delay(pollingInterval);
 }
